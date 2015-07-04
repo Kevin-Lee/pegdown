@@ -101,9 +101,8 @@ class ParserSpec extends Specification with ParserHelper {
     val expected = 0
     val extensionOptionPars = collectPairs(extensionOptions)(extensionOptions ++ smartOptions ++ htmlOptions)
     extensionOptionPars.foreach { case (a, b) =>
-      s"not have any common bit ($a, $b)" in {
+      s"not have any common bit: ($a, $b) => ($a & $b) === $expected" in {
         val actual = a & b
-        if ((a & b) != 0) println(s"($a, $b) == ${a & b}")
         actual === expected
       }
     }
@@ -113,9 +112,8 @@ class ParserSpec extends Specification with ParserHelper {
     val expected = 0
     val smartExtensionOptionPairs = collectPairs(smartOptions)(extensionOptions ++ htmlOptions)
     smartExtensionOptionPairs.foreach { case (a, b) =>
-      s"not have any common bit ($a, $b)" in {
+      s"not have any common bit: ($a, $b) => ($a & $b) === $expected" in {
         val actual = a & b
-        if ((a & b) != 0) println(s"($a, $b) == ${a & b}")
         actual === expected
       }
     }
@@ -125,9 +123,8 @@ class ParserSpec extends Specification with ParserHelper {
     val expected = 0
     val htmlExtensionOptionPairs = collectPairs(htmlOptions)(extensionOptions ++ smartOptions)
     htmlExtensionOptionPairs.foreach { case (a, b) =>
-      s"not have any common bit ($a, $b)" in {
+      s"not have any common bit: ($a, $b) => ($a & $b) === $expected" in {
         val actual = a & b
-        if ((a & b) != 0) println(s"($a, $b) == ${a & b}")
         actual === expected
       }
     }

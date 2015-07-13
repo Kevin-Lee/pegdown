@@ -6,7 +6,6 @@ import org.parboiled.support.Characters
 import org.pegdown.plugins.PegDownPlugins
 import org.specs2.mutable._
 
-import scala.annotation.tailrec
 import scala.util.Random
 
 /**
@@ -23,7 +22,7 @@ class ParserSpec extends Specification with ParserHelper {
       s"  specialChar() === $expected" in {
         val actual = parser.SpecialChar()
         val actualChars = extractSpecialChars(actual)
-        actualChars must not be (None)
+        actualChars must not be None
         actualChars.get === expected
       }
     }
@@ -35,7 +34,7 @@ class ParserSpec extends Specification with ParserHelper {
     s"  specialChar() === $expected" in {
       val actual = parser.SpecialChar()
       val actualChars = extractSpecialChars(actual)
-      actualChars must not be (None)
+      actualChars must not be None
       actualChars.get === expected
     }
   }
@@ -47,7 +46,7 @@ class ParserSpec extends Specification with ParserHelper {
     s"  specialChar() === $expected" in {
       val actual = parser.SpecialChar()
       val actualChars = extractSpecialChars(actual)
-      actualChars must not be (None)
+      actualChars must not be None
       actualChars.get === expected
     }
   }
@@ -60,7 +59,7 @@ class ParserSpec extends Specification with ParserHelper {
     s"  specialChar() === $expected" in {
       val actual = parser.SpecialChar()
       val actualChars = extractSpecialChars(actual)
-      actualChars must not be (None)
+      actualChars must not be None
       actualChars.get === expected
     }
   }
@@ -71,7 +70,7 @@ class ParserSpec extends Specification with ParserHelper {
     s"  specialChar() === $expected" in {
       val actual = parser.SpecialChar()
       val actualChars = extractSpecialChars(actual)
-      actualChars must not be (None)
+      actualChars must not be None
       actualChars.get === expected
     }
   }
@@ -185,50 +184,33 @@ trait ParserHelper {
     Extension("SUPPRESS_INLINE_HTML", Extensions.SUPPRESS_INLINE_HTML),
     Extension(              "TABLES", Extensions.TABLES),
     Extension(           "WIKILINKS", Extensions.WIKILINKS)
-  )
+  ).toVector
   /* @formatter:on */
 
   /* This has to be split into smaller sets. Otherwise it takes too long to test due to too many possible option combinations. */
   protected val groupedOptions = Random.shuffle(options).grouped(5).toList
 
   /**
-   * helper method to create list of option sets.
+   * helper method to create Seq of options.
    *
    * {{{
    * // examples,
    *
-   *    input: Set("a")
-   *   output: List(Set(a))
+   *    input: Seq("a")
+   *   output: Seq(Seq(a))
    *
-   *    input: Set("a", "b")
-   *   output: List(Set(a), Set(b), Set(a, b))
+   *    input: Seq("a", "b")
+   *   output: Seq(Seq(a), Seq(b), Seq(a, b))
    *
-   *    input: Set("a", "b", "c")
-   *   output: List(Set(b), Set(c), Set(a), Set(a, b), Set(b, c), Set(a, c), Set(a, b, c))
+   *    input: Seq("a", "b", "c")
+   *   output: Seq(Seq(b), Seq(c), Seq(a), Seq(a, b), Seq(b, c), Seq(a, c), Seq(a, b, c))
    * }}}
    *
    * @param options the given options
    * @tparam T the element type
-   * @return List of option Set containing all possible combinations of the given options.
+   * @return Seq of option Seq containing all possible combinations of the given options.
    */
-  def formOptions[T](options: Set[T]): List[Set[T]] = {
-
-    @tailrec
-    def eachNumberOfOptions(options: Set[T], howMany: Int, acc: Set[Set[T]]): Set[Set[T]] = howMany match {
-      case 0 =>
-        acc
-      case _ =>
-        @tailrec
-        def collectOptions(options: Set[T], howMany: Int, acc: Set[Set[T]]): Set[Set[T]] = howMany match {
-          case 0 =>
-            acc
-          case _ =>
-            collectOptions(options, howMany - 1, acc.flatMap(found => (options diff found).map(found + _)))
-        }
-        eachNumberOfOptions(options, howMany - 1, collectOptions(options, howMany, Set(Set())) ++ acc)
-    }
-    eachNumberOfOptions(options, options.size, Set()).toList.sortBy(_.size)
-  }
+  def formOptions[T](options: Seq[T]): Seq[Seq[T]] = (1 to options.length).flatMap(options.combinations(_))
 
   protected def collectPairs[T](base: Set[T])(options: Set[T]): Set[(T, T)] = base.flatMap(option => (options - option).map((option, _)))
 
